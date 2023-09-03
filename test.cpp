@@ -1,39 +1,38 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-class Solution {
-public:
-    string longestCommonPrefix(vector<string>& strs) {
-        int i=0;
-        char c=strs[0][0];
-        string res;
-        while(true) {
-            for(auto &s:strs) {
-                if(i>=s.size() || s[i]!=c) return res;
-            }
+#define int long long
 
-            res+=c;
-            i++;
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-            if(i<strs[0].size()) c=strs[0][i];
+    int n;
+    cin >> n;
+
+    vector<vector<int>> grid(n, vector<int>(n));
+    for(int i=0; i<n; i++) for(int j=0; j<n; j++) cin >> grid[i][j];
+
+    vector<vector<bool>> vis(n, vector<bool>(n, false));
+    int maxSum=0;
+
+    function<void(int, int, int)> util=[&](int i, int j, int curSum)->void {
+        if(i==n-1 && j==n-1) {
+            maxSum=max(maxSum, curSum+grid[i][j]);
+            return;
         }
 
-        return res;
-    }
-};
+        if(vis[i][j]) return;
 
-int main() {
-    vector<string> strs;
-    for(int i=0; i<3; i++) {
-        string tmp;
-        cin >> tmp;
-        strs.push_back(tmp);
-    }
+        vis[i][j]=true;
+        util((i+1)%n, j, curSum+grid[i][j]);
+        util(i, (j+1)%n, curSum+grid[i][j]);
+        vis[i][j]=false;
+    };
 
-    Solution solve;
-    string res=solve.longestCommonPrefix(strs);
+    util(0, 0, 0);
 
-    cout << res;
+    cout << maxSum << "\n";
 
-    return 0;
+    // return 1;
 }
